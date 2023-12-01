@@ -1,8 +1,7 @@
-// login.service.spec.ts
+
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { LoginService } from './login.service';
-import { loginUser } from '../interfaces/login'; // Ensure this import is correct
-
+import { loginUser } from '../interfaces/login'; 
 describe('LoginService', () => {
   let service: LoginService;
 
@@ -17,7 +16,7 @@ describe('LoginService', () => {
 
   it('should log in a user', fakeAsync(async () => {
     const mockUserLogin: loginUser = {
-      email: 'testuser@example.com', // Updated property name
+      email: 'testuser@example.com', 
       password: 'testpassword',
     };
 
