@@ -1,6 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-
+// login.service.spec.ts
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { LoginService } from './login.service';
+import { loginUser } from '../interfaces/login'; // Ensure this import is correct
 
 describe('LoginService', () => {
   let service: LoginService;
@@ -13,4 +14,40 @@ describe('LoginService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should log in a user', fakeAsync(async () => {
+    const mockUserLogin: loginUser = {
+      email: 'testuser@example.com', // Updated property name
+      password: 'testpassword',
+    };
+
+    const mockToken = 'mock-token';
+    const mockResponse = { token: mockToken };
+
+    spyOn(window, 'fetch').and.returnValue(Promise.resolve({
+      json: () => Promise.resolve(mockResponse),
+    } as Response));
+
+    let loginResponse: any;
+
+    service.login(mockUserLogin).then((response) => {
+      loginResponse = response;
+    });
+
+    tick();
+
+    expect(loginResponse).toEqual(mockResponse);
+    expect(localStorage.getItem('token')).toEqual(mockToken);
+
+    const expectedUrl = 'http://localhost:8000/user/login';
+    const expectedOptions: RequestInit = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(mockUserLogin),
+    };
+
+    expect(window.fetch).toHaveBeenCalledWith(expectedUrl, expectedOptions);
+  }));
 });
